@@ -4,28 +4,38 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import daysRouter from './routes/days.js';
 
-const app  = express();
-const PORT = process.env.PORT || 5000;
+const app = express();
 
-// ── Middleware ─────────────────────────────────────────────────────────────────
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// ── Routes ─────────────────────────────────────────────────────────────────────
+// Routes
 app.use('/api/days', daysRouter);
 
-app.get('/api/health', (_, res) => res.json({ status: 'ok', time: new Date() }));
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', time: new Date() });
+});
 
-// ── MongoDB Connection ─────────────────────────────────────────────────────────
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('✅ Connected to MongoDB Atlas');
-    app.listen(PORT, () =>
-      console.log(`🚀 Server running → http://localhost:${PORT}`)
-    );
-  })
-  .catch(err => {
-    console.error('❌ MongoDB connection failed:', err.message);
-    process.exit(1);
+// MongoDB (connect only once)
+let isConnected = false;
+
+async function connectDB() {
+  if (isConnected) return;
+  await mongoose.connect(process.env.MONGO_URI);
+  isConnected = true;
+}
+
+// Local dev fallback
+if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  connectDB().then(() => {
+    app.listen(PORT, () => console.log(`🚀 Server running locally on port ${PORT}`));
   });
+}
+
+// Vercel handler
+export default async function handler(req, res) {
+  await connectDB();
+  return app(req, res);
+}
