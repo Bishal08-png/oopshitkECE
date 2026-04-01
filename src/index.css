@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  body.dark {
+    @apply bg-gray-950 text-gray-100;
+  }
+
+  pre, code, .font-mono {
+    font-family: 'JetBrains Mono', monospace !important;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+  body.dark ::-webkit-scrollbar-thumb {
+    @apply bg-gray-600;
+  }
+
+  textarea:focus, input:focus {
+    outline: none;
+  }
+}
+
+@layer utilities {
+  .sidebar-transition {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .fade-in {
+    animation: fadeIn 0.18s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .copy-toast {
+    animation: toastIn 0.15s ease, toastOut 0.15s ease 1.2s forwards;
+  }
+  @keyframes toastIn  { from { opacity:0; transform:scale(0.9); } to { opacity:1; transform:scale(1); } }
+  @keyframes toastOut { from { opacity:1; transform:scale(1); } to { opacity:0; transform:scale(0.9); } }
+}
