@@ -82,8 +82,7 @@ export default function App() {
             </div>
           )}
         </main>
-        </main>
-
+    
 <footer className="w-full text-center py-4 mt-6 border-t text-sm text-gray-500">
   © 2026 OOPsHitkECE | Made by Bishal Das Gupta
 </footer>
